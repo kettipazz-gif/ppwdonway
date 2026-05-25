@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>ประปาบ้านดอนหวาย</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+:root{
+  --gd:#085041;--gm:#0F6E56;--g:#1D9E75;--gl:#5DCAA5;--gp:#E1F5EE;
+  --bl:#185FA5;--bp:#E6F1FB;--am:#854F0B;--ap:#FAEEDA;--rd:#A32D2D;--rp:#FCEBEB;
+  --bg:#F4F6F8;--card:#fff;--bdr:#E2E8F0;--tx:#1A2332;--tx2:#64748B;--tx3:#94A3B8;
+  --r:10px;--sh:0 1px 4px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;-webkit-text-size-adjust:100%;}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--gd);position:fixed;top:0;left:0;height:100%;z-index:100;display:flex;flex-direction:column;transition:transform .25s;overflow-y:auto;}
+.sidebar.hidden{transform:translateX(-220px);}
+.sb-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;}
+.sb-ov.show{display:block;}
+.sb-head{padding:16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;}
+.sb-logo{display:flex;align-items:center;gap:10px;}
+.sb-icon{width:36px;height:36px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gd);flex-shrink:0;}
+.sb-txt{font-size:13px;font-weight:600;color:#fff;line-height:1.3;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.5);margin-top:1px;}
+.sb-nav{padding:6px 0;flex:1;}
+.ni{display:flex;align-items:center;gap:10px;padding:11px 18px;color:rgba(255,255,255,.65);font-size:14px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent;}
+.ni:hover,.ni:active{background:rgba(255,255,255,.08);color:#fff;}
+.ni.active{background:rgba(255,255,255,.13);color:#fff;border-left-color:var(--gl);}
+.ni i{font-size:18px;min-width:20px;}
+.sb-foot{padding:10px 0;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0;}
+
+/* MAIN */
+.main{margin-left:220px;min-height:100vh;display:flex;flex-direction:column;transition:margin-left .25s;}
+.main.full{margin-left:0;}
+
+/* TOPBAR */
+.topbar{background:var(--gm);color:#fff;display:flex;align-items:center;padding:0 14px;height:56px;gap:10px;position:sticky;top:0;z-index:50;flex-shrink:0;}
+.tb-c{flex:1;text-align:center;min-width:0;}
+.tb-title{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tb-sub{font-size:10px;color:rgba(255,255,255,.65);margin-top:1px;}
+.mb{background:none;border:none;color:#fff;cursor:pointer;padding:6px;border-radius:6px;font-size:22px;display:flex;align-items:center;flex-shrink:0;}
+.mb:hover{background:rgba(255,255,255,.12);}
+.uchip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.13);border-radius:20px;padding:4px 10px 4px 5px;font-size:12px;white-space:nowrap;flex-shrink:0;}
+.uav{width:26px;height:26px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--gd);}
+
+/* SYNC STATUS */
+.sync-bar{background:#fff;border-bottom:1px solid var(--bdr);padding:5px 14px;font-size:11px;color:var(--tx2);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-ok{background:var(--g);}.dot-err{background:var(--rd);}.dot-loading{background:var(--am);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* BREADCRUMB */
+.bc{padding:8px 14px;font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:5px;background:var(--card);border-bottom:1px solid var(--bdr);}
+.bc .cur{color:var(--gm);font-weight:500;}
+
+/* CONTENT */
+.content{flex:1;padding:14px;overflow-y:auto;}
+.page{display:none;}.page.show{display:block;}
+
+/* STAT GRID */
+.sg4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+@media(min-width:600px){.sg4{grid-template-columns:repeat(4,1fr);}}
+.sg3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.sc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh);}
+.sl{font-size:11px;color:var(--tx2);margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.sv{font-size:22px;font-weight:600;}
+.su{font-size:11px;color:var(--tx3);margin-top:1px;}
+.cg{color:var(--gm);}.cr{color:var(--rd);}.cb{color:var(--bl);}.ca{color:var(--am);}
+
+/* KHUM */
+.kg{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px;}
+@media(min-width:600px){.kg{grid-template-columns:repeat(3,1fr);}}
+.kc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);}
+.kh{padding:12px 14px;color:#fff;}
+.kb{padding:12px 14px;}
+.kr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bdr);}
+.kr:last-child{border-bottom:none;}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;box-shadow:var(--sh);margin-bottom:12px;}
+.ct{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.ct i{color:var(--g);font-size:17px;}
+
+/* FORM */
+.fld{margin-bottom:11px;}
+.fld label{display:block;font-size:12px;color:var(--tx2);margin-bottom:4px;font-weight:500;}
+.fld input,.fld select,.fld textarea{width:100%;padding:0 11px;height:40px;border:1px solid var(--bdr);border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;background:#F8FAFC;color:var(--tx);outline:none;transition:border-color .15s;-webkit-appearance:none;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(29,158,117,.1);background:#fff;}
+.fld textarea{height:68px;padding:10px 11px;resize:none;}
+.fld input[readonly]{background:#EFF3F7;color:var(--tx2);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:400px){.g2{grid-template-columns:1fr;}}
+
+/* BTN */
+.btn{height:40px;padding:0 14px;border-radius:8px;font-size:14px;font-family:'Sarabun',sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid;transition:all .15s;white-space:nowrap;font-weight:500;-webkit-tap-highlight-color:transparent;}
+.btn:active{transform:scale(.96);}
+.bp2{background:var(--g);color:#fff;border-color:var(--g);}.bp2:hover{background:var(--gm);}
+.bs{background:#fff;color:var(--tx);border-color:var(--bdr);}.bs:hover{background:#F4F6F8;}
+.bd{background:var(--rp);color:var(--rd);border-color:#F09595;}
+.bsm{height:32px;padding:0 12px;font-size:12px;}
+.bxs{height:27px;padding:0 9px;font-size:11px;}
+.bbl{background:var(--bl);color:#fff;border-color:var(--bl);}
+
+/* TOOLBAR */
+.tb2{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.sbx{position:relative;flex:1;min-width:140px;}
+.sbx i{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:15px;pointer-events:none;}
+.sbx input{width:100%;height:38px;padding:0 10px 0 32px;border:1px solid var(--bdr);border-radius:8px;font-size:13px;font-family:'Sarabun',sans-serif;background:#fff;color:var(--tx);outline:none;}
+.sbx input:focus{border-color:var(--g);}
+.fsel{height:38px;padding:0 10px;border:1px solid var(--bdr);border-radius:8px;font-size:13px;font-family:'Sarabun',sans-serif;background:#fff;color:var(--tx);-webkit-appearance:none;}
+
+/* TABLE */
+.tw{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:auto;box-shadow:var(--sh);-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:480px;}
+thead th{background:#F8FAFC;font-size:12px;font-weight:600;color:var(--tx2);padding:9px 12px;text-align:left;border-bottom:1px solid var(--bdr);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--bdr);}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:#FAFBFC;}
+tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
+
+/* BADGE */
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;white-space:nowrap;}
+.bg2{background:var(--gp);color:var(--gd);}.bb{background:var(--bp);color:var(--bl);}.bar2{background:var(--ap);color:var(--am);}.br{background:var(--rp);color:var(--rd);}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;padding:0;}
+.ov.show{display:flex;}
+@media(min-width:600px){.ov{align-items:center;padding:16px;}}
+.modal{background:var(--card);border-radius:16px 16px 0 0;width:100%;max-height:92vh;overflow-y:auto;position:relative;padding:20px 16px 24px;box-shadow:0 -4px 30px rgba(0,0,0,.2);}
+@media(min-width:600px){.modal{border-radius:14px;max-width:460px;max-height:88vh;padding:22px;}}
+.mhandle{width:40px;height:4px;background:#CBD5E1;border-radius:4px;margin:0 auto 16px;}
+@media(min-width:600px){.mhandle{display:none;}}
+.mt{font-size:16px;font-weight:600;color:var(--tx);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.mt i{color:var(--g);}
+.mf{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
+.cbtn{position:absolute;top:16px;right:14px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--tx2);padding:4px;border-radius:6px;}
+.cbtn:hover{background:#F4F6F8;}
+
+/* TOGGLE */
+.tr2{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bdr);}
+.tr2:last-child{border-bottom:none;}
+.tgl{position:relative;width:42px;height:24px;cursor:pointer;flex-shrink:0;}
+.tgl input{opacity:0;width:0;height:0;position:absolute;}
+.sldr{position:absolute;inset:0;background:#CBD5E1;border-radius:24px;transition:.25s;}
+.sldr:before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.25s;}
+.tgl input:checked+.sldr{background:var(--g);}
+.tgl input:checked+.sldr:before{transform:translateX(18px);}
+
+/* CALC BOX */
+.calcbox{background:var(--gp);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;}
+.clbl{font-size:13px;color:var(--gd);}
+.cbig{font-size:20px;font-weight:700;color:var(--gd);}
+
+/* PROFILE */
+.phdr{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.pav{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gl),var(--g));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+.ir{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:13px;gap:8px;}
+.ir:last-of-type{border-bottom:none;}
+
+/* CHART */
+.cha{display:flex;align-items:flex-end;gap:6px;padding:0 2px 24px;height:160px;overflow-x:auto;}
+.bw{flex:1;min-width:32px;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.bar2c{width:100%;border-radius:3px 3px 0 0;cursor:pointer;transition:opacity .15s;}
+.bar2c:hover{opacity:.8;}
+.blbl{font-size:10px;color:var(--tx2);text-align:center;white-space:nowrap;}
+.bval{font-size:9px;color:var(--tx3);text-align:center;}
+
+/* BILL PAPER */
+.bpaper{background:#fff;padding:20px;max-width:380px;width:100%;}
+.borg{font-size:15px;font-weight:700;color:var(--gd);text-align:center;}
+.bsub2{font-size:11px;color:#888;text-align:center;margin-top:2px;}
+.bdiv{border:none;border-top:1.5px dashed #ccc;margin:12px 0;}
+.brow{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:.5px solid #f0f0f0;}
+.brow:last-of-type{border:none;}
+.btot{display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:var(--gd);padding:10px 0 4px;}
+.bfoot2{text-align:center;font-size:11px;color:#aaa;margin-top:10px;}
+
+/* SET TABS */
+.stwrap{display:flex;flex-direction:column;gap:12px;}
+@media(min-width:700px){.stwrap{flex-direction:row;align-items:flex-start;}}
+.sttabs{display:flex;overflow-x:auto;gap:4px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:6px;box-shadow:var(--sh);-webkit-overflow-scrolling:touch;}
+@media(min-width:700px){.sttabs{flex-direction:column;min-width:160px;padding:4px 0;gap:0;overflow-x:visible;}}
+.stt{display:flex;align-items:center;gap:7px;padding:9px 12px;font-size:12px;color:var(--tx2);cursor:pointer;border-radius:7px;white-space:nowrap;transition:background .12s;}
+@media(min-width:700px){.stt{border-radius:0;border-left:3px solid transparent;padding:11px 14px;}}
+.stt:hover{background:#F4F6F8;}
+.stt.active{color:var(--gm);background:var(--gp);font-weight:500;}
+@media(min-width:700px){.stt.active{border-left-color:var(--g);border-radius:0;}}
+.stc{flex:1;}
+.panel{display:none;}.panel.show{display:block;}
+
+/* DOC CARDS */
+.dg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+@media(min-width:500px){.dg{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:800px){.dg{grid-template-columns:repeat(4,1fr);}}
+.dc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;box-shadow:var(--sh);transition:border-color .15s;}
+.dc:hover{border-color:var(--gl);background:var(--gp);}
+.di{width:40px;height:46px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.dn{font-size:12px;font-weight:500;color:var(--tx);line-height:1.3;margin-bottom:3px;}
+.dm{font-size:10px;color:var(--tx3);}
+
+/* COMMITTEE */
+.comg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+@media(min-width:500px){.comg{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:800px){.comg{grid-template-columns:repeat(4,1fr);}}
+.comc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;text-align:center;box-shadow:var(--sh);}
+.comav{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gl),var(--g));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin:0 auto 8px;}
+
+/* METHOD */
+.mbtn{flex:1;height:38px;border-radius:8px;font-size:13px;font-family:'Sarabun',sans-serif;cursor:pointer;border:1px solid var(--bdr);background:#F8FAFC;color:var(--tx);}
+.mbtn.sel{background:var(--gp);color:var(--gd);border-color:var(--gl);font-weight:500;}
+
+/* WARN */
+.wbox{background:#FFF7E6;border:1px solid #F0C070;border-radius:8px;padding:10px 12px;font-size:12px;color:var(--am);margin-bottom:12px;}
+.dbox{background:#FFF0F0;border:1px solid #F09595;border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;display:none;align-items:center;gap:8px;z-index:500;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:nowrap;}
+.toast.show{display:flex;}
+.toast.ok{background:var(--gd);}
+.toast.err{background:var(--rd);}
+.toast.loading{background:var(--am);}
+
+/* LOADING OVERLAY */
+.lding{display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:10px;}
+.lding.show{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid var(--bdr);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* LOGIN */
+#loginPage{position:fixed;inset:0;background:linear-gradient(160deg,#E1F5EE,#9FE1CB 40%,var(--g));display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;}
+.lcard{background:#fff;border-radius:20px;padding:28px 22px;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(15,110,86,.18);}
+.llogo{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--gd));display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.ltitle{font-size:19px;font-weight:700;color:var(--tx);text-align:center;}
+.lsub{font-size:12px;color:var(--tx2);text-align:center;margin-top:3px;margin-bottom:22px;}
+.lerr{background:var(--rp);color:var(--rd);border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:12px;display:none;}
+
+/* HIDE MOBILE */
+.hm{display:none;}
+@media(min-width:600px){.hm{display:table-cell;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="lcard">
+    <div class="llogo"><svg width="30" height="30" viewBox="0 0 32 32" fill="none"><path d="M16 4C16 4 8 10 8 18C8 22.4 11.6 26 16 26C20.4 26 24 22.4 24 18C24 10 16 4 16 4Z" fill="white" opacity=".9"/><path d="M16 12C16 12 12 15.5 12 18.5C12 20.4 13.8 22 16 22C18.2 22 20 20.4 20 18.5C20 15.5 16 12 16 12Z" fill="#1D9E75"/></svg></div>
+    <div class="ltitle">ประปาบ้านดอนหวาย</div>
+    <div class="lsub">บ้านดอนหวาย ต.สะเดา อ.นางรอง จ.บุรีรัมย์</div>
+    <div class="lerr" id="loginErr">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
+    <div class="fld"><label>ชื่อผู้ใช้</label><input id="loginUser" placeholder="กรอกชื่อผู้ใช้" autocomplete="username"/></div>
+    <div class="fld"><label>รหัสผ่าน</label><input type="password" id="loginPass" placeholder="กรอกรหัสผ่าน" autocomplete="current-password"/></div>
+    <button class="btn bp2" style="width:100%;height:44px;font-size:15px;margin-top:6px;" onclick="doLogin()"><i class="ti ti-login"></i> เข้าสู่ระบบ</button>
+    <div style="text-align:center;font-size:11px;color:var(--tx3);margin-top:14px;">ทดสอบ: admin / 1234</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appShell" style="display:none;">
+  <div class="sb-ov" id="sbOv" onclick="closeSB()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head"><div class="sb-logo"><div class="sb-icon"><i class="ti ti-droplet"></i></div><div><div class="sb-txt">ประปาบ้านดอนหวาย</div><div class="sb-sub">ระบบจัดการน้ำประปา</div></div></div></div>
+    <div class="sb-nav">
+      <div class="ni active" onclick="goto('home',this)"><i class="ti ti-home"></i> หน้าหลัก</div>
+      <div class="ni" onclick="goto('users',this)"><i class="ti ti-users"></i> จัดการผู้ใช้</div>
+      <div class="ni" onclick="goto('meter',this)"><i class="ti ti-writing"></i> บันทึกค่าน้ำ</div>
+      <div class="ni" onclick="goto('bill',this)"><i class="ti ti-receipt"></i> บิลใบเสร็จ</div>
+      <div class="ni" onclick="goto('pay',this)"><i class="ti ti-cash"></i> ชำระเงิน</div>
+      <div class="ni" onclick="goto('report',this)"><i class="ti ti-chart-bar"></i> รายงาน</div>
+      <div class="ni" onclick="goto('docs',this)"><i class="ti ti-file-text"></i> เอกสาร</div>
+      <div class="ni" onclick="goto('directory',this)"><i class="ti ti-address-book"></i> ทำเนียบ</div>
+      <div class="ni" onclick="goto('settings',this)"><i class="ti ti-settings"></i> ตั้งค่า</div>
+    </div>
+    <div class="sb-foot"><div class="ni" onclick="doLogout()"><i class="ti ti-logout"></i> ออกจากระบบ</div></div>
+  </div>
+
+  <div class="main" id="mainArea">
+    <div class="topbar">
+      <button class="mb" onclick="toggleSB()"><i class="ti ti-menu-2"></i></button>
+      <div class="tb-c"><div class="tb-title">ประปาบ้านดอนหวาย</div><div class="tb-sub">บ้านดอนหวาย ต.สะเดา อ.นางรอง จ.บุรีรัมย์</div></div>
+      <div class="uchip"><div class="uav" id="topAv">ผ</div><span id="topName" class="hm">ผู้ดูแลระบบ</span></div>
+    </div>
+    <div class="sync-bar"><div class="sync-dot dot-loading" id="syncDot"></div><span id="syncTxt">กำลังเชื่อมต่อ Google Sheets...</span><span style="margin-left:auto;font-size:11px;color:var(--tx3);" id="syncTime"></span></div>
+    <div class="bc"><i class="ti ti-home" style="font-size:13px;"></i><span>หน้าหลัก</span><span style="color:var(--tx3);">/</span><span class="cur" id="bcCur">หน้าหลัก</span></div>
+
+    <div class="content">
+
+      <!-- HOME -->
+      <div class="page show" id="page-home">
+        <div class="sg4">
+          <div class="sc"><div class="sl"><i class="ti ti-users"></i>ผู้ใช้น้ำ</div><div class="sv cg" id="sTotal">—</div><div class="su">ครัวเรือน</div></div>
+          <div class="sc"><div class="sl"><i class="ti ti-alert-circle"></i>ติดค้าง</div><div class="sv cr" id="sDebt">—</div><div class="su">ครัวเรือน</div></div>
+          <div class="sc"><div class="sl"><i class="ti ti-circle-check"></i>ชำระแล้ว</div><div class="sv cb" id="sPaid">—</div><div class="su">ครัวเรือน</div></div>
+          <div class="sc"><div class="sl"><i class="ti ti-coin"></i>รายได้เดือนนี้</div><div class="sv ca" id="sIncome">—</div><div class="su">บาท</div></div>
+        </div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;justify-content:space-between;">
+          <span><i class="ti ti-map-pin" style="color:var(--g);"></i> ข้อมูลรายคุ้ม</span>
+          <button class="btn bs bsm" onclick="loadAll()"><i class="ti ti-refresh"></i> รีเฟรช</button>
+        </div>
+        <div class="kg" id="khumCards"></div>
+      </div>
+
+      <!-- USERS -->
+      <div class="page" id="page-users">
+        <div class="tb2">
+          <div class="sbx"><i class="ti ti-search"></i><input id="uSearch" placeholder="ค้นหาชื่อ / รหัส..." oninput="renderUsers()"/></div>
+          <button class="btn bp2 bsm" onclick="openM('addUserM')"><i class="ti ti-user-plus"></i> เพิ่ม</button>
+          <button class="btn bs bsm" onclick="openM('editAuthM')"><i class="ti ti-pencil"></i> แก้ไข</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>รหัส</th><th>ชื่อ-นามสกุล</th><th class="hm">ที่อยู่</th><th>คุ้ม</th><th style="text-align:center;">จัดการ</th></tr></thead>
+          <tbody id="userTb"></tbody>
+        </table></div>
+      </div>
+
+      <!-- METER -->
+      <div class="page" id="page-meter">
+        <div class="card">
+          <div class="ct"><i class="ti ti-droplet"></i>บันทึกมิเตอร์น้ำ</div>
+          <div class="g2">
+            <div class="fld"><label>เดือน/ปี</label><select id="mMonth"><option>พฤษภาคม 2568</option><option>เมษายน 2568</option><option>มีนาคม 2568</option></select></div>
+            <div class="fld"><label>คุ้ม</label><select id="mKhum" onchange="updateMU()"><option value="">ทั้งหมด</option><option>คุ้มดอนหวาย</option><option>คุ้มโคกหลุมเงิน</option><option>คุ้มกิโลเก้า</option></select></div>
+            <div class="fld"><label>ผู้ใช้</label><select id="mUser" onchange="loadPrev()"><option value="">-- เลือกผู้ใช้ --</option></select></div>
+            <div class="fld"><label>มิเตอร์ก่อน</label><input type="number" id="mPrev" readonly placeholder="—"/></div>
+            <div class="fld"><label>มิเตอร์ปัจจุบัน</label><input type="number" id="mCurr" placeholder="กรอกเลขมิเตอร์" oninput="calcM()"/></div>
+            <div class="fld"><label>อัตรา (บาท/หน่วย)</label><input type="number" id="mRate" value="8" oninput="calcM()"/></div>
+          </div>
+          <div class="calcbox"><div><div class="clbl">หน่วยที่ใช้: <strong id="mUnit">0</strong> หน่วย</div></div><div><div class="clbl" style="font-size:11px;">ยอดที่ต้องชำระ</div><div class="cbig" id="mBill">0 บาท</div></div></div>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
+            <button class="btn bs bsm" onclick="clearMF()"><i class="ti ti-refresh"></i> ล้าง</button>
+            <button class="btn bp2 bsm" onclick="saveMeter()"><i class="ti ti-check"></i> บันทึก</button>
+          </div>
+        </div>
+        <div class="card" style="padding-bottom:6px;">
+          <div class="ct" style="margin-bottom:8px;"><i class="ti ti-history"></i>ประวัติการบันทึก</div>
+          <div class="tb2"><div class="sbx"><i class="ti ti-search"></i><input placeholder="ค้นหา..." oninput="filterMH(this.value)"/></div></div>
+          <div class="tw"><table><thead><tr><th>รหัส</th><th>ชื่อ</th><th class="hm">คุ้ม</th><th>ก่อน</th><th>หลัง</th><th>หน่วย</th><th>ยอด(บาท)</th></tr></thead><tbody id="mHistTb"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- BILL -->
+      <div class="page" id="page-bill">
+        <div class="tb2">
+          <div class="sbx"><i class="ti ti-search"></i><input placeholder="ค้นหา..." oninput="filterBills(this.value)"/></div>
+          <select class="fsel" id="billStat" onchange="filterBills('')"><option value="">ทุกสถานะ</option><option value="ชำระแล้ว">ชำระแล้ว</option><option value="ค้างชำระ">ค้างชำระ</option></select>
+          <button class="btn bp2 bsm" onclick="showT('ออกบิลทั้งหมดสำเร็จ','ok')"><i class="ti ti-file-plus"></i><span class="hm"> ออกบิล</span></button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>รหัสบิล</th><th>ชื่อ</th><th class="hm">คุ้ม</th><th>หน่วย</th><th>ยอด(บาท)</th><th>สถานะ</th><th style="text-align:center;">จัดการ</th></tr></thead>
+          <tbody id="billTb"></tbody>
+        </table></div>
+      </div>
+
+      <!-- PAY -->
+      <div class="page" id="page-pay">
+        <div class="sg3" style="margin-bottom:14px;">
+          <div class="sc"><div class="sl"><i class="ti ti-alert-circle"></i>ค้างชำระ</div><div class="sv cr" id="psDebt">—</div><div class="su" id="psDA"></div></div>
+          <div class="sc"><div class="sl"><i class="ti ti-circle-check"></i>ชำระแล้ว</div><div class="sv cg" id="psPaid">—</div><div class="su" id="psPA"></div></div>
+          <div class="sc"><div class="sl"><i class="ti ti-coin"></i>รายได้รวม</div><div class="sv cb" id="psTot">—</div><div class="su">บาท</div></div>
+        </div>
+        <div class="card" style="padding-bottom:6px;">
+          <div class="ct" style="margin-bottom:8px;"><i class="ti ti-alert-circle"></i>รายการค้างชำระ</div>
+          <div class="tb2">
+            <div class="sbx"><i class="ti ti-search"></i><input placeholder="ค้นหา..." oninput="filterDebts(this.value)"/></div>
+            <select class="fsel" id="debtKhum" onchange="filterDebts('')"><option value="">ทุกคุ้ม</option><option>คุ้มดอนหวาย</option><option>คุ้มโคกหลุมเงิน</option><option>คุ้มกิโลเก้า</option></select>
+          </div>
+          <div class="tw"><table><thead><tr><th>รหัส</th><th>ชื่อ</th><th class="hm">คุ้ม</th><th>ยอดค้าง</th><th style="text-align:center;">ดำเนินการ</th></tr></thead><tbody id="debtTb"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- REPORT -->
+      <div class="page" id="page-report">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div style="display:flex;gap:5px;flex-wrap:wrap;">
+            <button class="btn bp2 bsm" id="rbtM" onclick="setRT('monthly',this)">รายเดือน</button>
+            <button class="btn bs bsm" id="rbtK" onclick="setRT('khum',this)">รายคุ้ม</button>
+            <button class="btn bs bsm" id="rbtD" onclick="setRT('debt',this)">ค้างชำระ</button>
+          </div>
+          <button class="btn bs bsm" onclick="showT('ส่งออก Excel สำเร็จ','ok')"><i class="ti ti-download"></i> ส่งออก</button>
+        </div>
+        <div class="sg4" style="margin-bottom:12px;">
+          <div class="sc"><div class="sl">รายได้ปีนี้</div><div class="sv cg">421,800</div><div class="su">บาท</div></div>
+          <div class="sc"><div class="sl">เฉลี่ย/เดือน</div><div class="sv cb">35,150</div><div class="su">บาท</div></div>
+          <div class="sc"><div class="sl">หน่วยน้ำปีนี้</div><div class="sv ca">52,725</div><div class="su">หน่วย</div></div>
+          <div class="sc"><div class="sl">ยอดค้างสะสม</div><div class="sv cr" id="rDebt">—</div><div class="su">บาท</div></div>
+        </div>
+        <div class="card" style="margin-bottom:12px;"><div class="ct"><i class="ti ti-chart-bar"></i><span id="rCT">รายได้รายเดือน</span></div><div class="cha" id="rChart"></div></div>
+        <div class="card" style="padding-bottom:6px;"><div class="ct" style="margin-bottom:8px;"><i class="ti ti-table"></i><span id="rTT">ตารางรายเดือน</span></div><div class="tw"><table><thead id="rThead"></thead><tbody id="rTbody"></tbody></table></div></div>
+      </div>
+
+      <!-- DOCS -->
+      <div class="page" id="page-docs">
+        <div class="tb2">
+          <div class="sbx"><i class="ti ti-search"></i><input placeholder="ค้นหาเอกสาร..." oninput="filterDocs(this.value)"/></div>
+          <select class="fsel" id="docCF" onchange="filterDocs('')"><option value="">ทุกหมวด</option><option>ทะเบียน</option><option>รายงาน</option><option>ระเบียบ</option><option>อื่นๆ</option></select>
+          <button class="btn bp2 bsm" onclick="openM('uploadDocM')"><i class="ti ti-upload"></i><span class="hm"> อัปโหลด</span></button>
+        </div>
+        <div id="docCont"></div>
+      </div>
+
+      <!-- DIRECTORY -->
+      <div class="page" id="page-directory">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;"><i class="ti ti-award" style="color:var(--g);"></i>คณะกรรมการ</div>
+          <button class="btn bp2 bsm" onclick="openM('addMemM')"><i class="ti ti-user-plus"></i> เพิ่ม</button>
+        </div>
+        <div class="comg" id="comGrid"></div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="ti ti-id-badge" style="color:var(--g);"></i>เจ้าหน้าที่</div>
+        <div class="tw" style="margin-bottom:14px;"><table><thead><tr><th>#</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th class="hm">เบอร์โทร</th><th class="hm">หมายเหตุ</th></tr></thead><tbody id="staffTb"></tbody></table></div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i class="ti ti-history" style="color:var(--g);"></i>ประวัติคณะกรรมการ</div>
+        <div class="tw"><table><thead><tr><th>ชุดที่</th><th>ประธาน</th><th>วาระ</th><th class="hm">หมายเหตุ</th></tr></thead><tbody>
+          <tr><td>1</td><td>นายสมศักดิ์ พึ่งดี</td><td>2560–2562</td><td class="hm">ผู้ก่อตั้ง</td></tr>
+          <tr><td>2</td><td>นายวิรัตน์ แสงศรี</td><td>2562–2564</td><td class="hm">—</td></tr>
+          <tr><td>3</td><td>นายประสิทธิ์ ชัยภูมิ</td><td>2564–2566</td><td class="hm">—</td></tr>
+          <tr><td>4 (ปัจจุบัน)</td><td>นายสมชาย ใจดี</td><td>2566–ปัจจุบัน</td><td class="hm">วาระปัจจุบัน</td></tr>
+        </tbody></table></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="stwrap">
+          <div class="sttabs">
+            <div class="stt active" onclick="setST('org',this)"><i class="ti ti-building"></i><span>ข้อมูลองค์กร</span></div>
+            <div class="stt" onclick="setST('rate',this)"><i class="ti ti-coin"></i><span>อัตราค่าน้ำ</span></div>
+            <div class="stt" onclick="setST('accounts',this)"><i class="ti ti-user-cog"></i><span>บัญชีผู้ใช้</span></div>
+            <div class="stt" onclick="setST('notify',this)"><i class="ti ti-bell"></i><span>แจ้งเตือน</span></div>
+            <div class="stt" onclick="setST('backup',this)"><i class="ti ti-database"></i><span>สำรองข้อมูล</span></div>
+            <div class="stt" onclick="setST('api',this)"><i class="ti ti-api"></i><span>Google Sheets</span></div>
+          </div>
+          <div class="stc">
+            <div class="panel show" id="panel-org"><div class="card">
+              <div class="ct"><i class="ti ti-building"></i>ข้อมูลองค์กร</div>
+              <div class="fld"><label>ชื่อองค์กร</label><input id="orgName" value="ประปาบ้านดอนหวาย"/></div>
+              <div class="g2"><div class="fld"><label>หมู่บ้าน</label><input value="บ้านดอนหวาย"/></div><div class="fld"><label>ตำบล</label><input value="สะเดา"/></div></div>
+              <div class="g2"><div class="fld"><label>อำเภอ</label><input value="นางรอง"/></div><div class="fld"><label>จังหวัด</label><input value="บุรีรัมย์"/></div></div>
+              <div class="fld"><label>เบอร์โทร</label><input value="081-234-5678"/></div>
+              <div style="display:flex;justify-content:flex-end;"><button class="btn bp2 bsm" onclick="showT('บันทึกสำเร็จ','ok')"><i class="ti ti-check"></i> บันทึก</button></div>
+            </div></div>
+            <div class="panel" id="panel-rate"><div class="card">
+              <div class="ct"><i class="ti ti-coin"></i>อัตราค่าน้ำ</div>
+              <div class="g2"><div class="fld"><label>อัตรา (บาท/หน่วย)</label><input id="rateVal" type="number" value="8"/></div><div class="fld"><label>ค่าบริการ/เดือน</label><input type="number" value="0"/></div></div>
+              <div class="g2"><div class="fld"><label>หน่วยขั้นต่ำ</label><input type="number" value="1"/></div><div class="fld"><label>วันครบกำหนด</label><input type="number" value="15"/></div></div>
+              <div class="fld"><label>ค่าปรับเกินกำหนด (บาท)</label><input type="number" value="50"/></div>
+              <div class="wbox"><i class="ti ti-alert-triangle" style="font-size:13px;vertical-align:-2px;margin-right:4px;"></i>อัตราใหม่จะมีผลเดือนถัดไป</div>
+              <div style="display:flex;justify-content:flex-end;"><button class="btn bp2 bsm" onclick="showT('บันทึกสำเร็จ','ok')"><i class="ti ti-check"></i> บันทึก</button></div>
+            </div></div>
+            <div class="panel" id="panel-accounts"><div class="card">
+              <div class="ct" style="margin-bottom:8px;"><i class="ti ti-user-cog"></i>บัญชีผู้ใช้งาน</div>
+              <div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="btn bp2 bsm" onclick="showT('เพิ่มบัญชีใหม่')"><i class="ti ti-user-plus"></i> เพิ่ม</button></div>
+              <div class="tw"><table style="min-width:300px;"><thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อ</th><th>บทบาท</th><th>จัดการ</th></tr></thead><tbody>
+                <tr><td><strong>admin</strong></td><td>ผู้ดูแลระบบ</td><td><span class="badge bg2">ผู้ดูแล</span></td><td><button class="btn bs bxs" onclick="showT('เปลี่ยนรหัสผ่านสำเร็จ','ok')">เปลี่ยนรหัส</button></td></tr>
+                <tr><td>staff01</td><td>วิชัย มานะ</td><td><span class="badge bb">เจ้าหน้าที่</span></td><td><button class="btn bs bxs" onclick="showT('เปลี่ยนรหัสผ่านสำเร็จ','ok')">เปลี่ยนรหัส</button></td></tr>
+              </tbody></table></div>
+            </div></div>
+            <div class="panel" id="panel-notify"><div class="card">
+              <div class="ct"><i class="ti ti-bell"></i>การแจ้งเตือน</div>
+              <div class="tr2"><div><div style="font-size:13px;font-weight:500;">แจ้งเตือนถึงกำหนดชำระ</div><div style="font-size:11px;color:var(--tx2);">ก่อนครบกำหนด 3 วัน</div></div><label class="tgl"><input type="checkbox" checked/><span class="sldr"></span></label></div>
+              <div class="tr2"><div><div style="font-size:13px;font-weight:500;">แจ้งเตือนผู้ค้างชำระ</div><div style="font-size:11px;color:var(--tx2);">ค้างเกิน 15 วัน</div></div><label class="tgl"><input type="checkbox" checked/><span class="sldr"></span></label></div>
+              <div class="tr2"><div><div style="font-size:13px;font-weight:500;">แจ้งเตือนบันทึกมิเตอร์</div><div style="font-size:11px;color:var(--tx2);">ยังไม่ได้บันทึก</div></div><label class="tgl"><input type="checkbox"/><span class="sldr"></span></label></div>
+              <div class="tr2"><div><div style="font-size:13px;font-weight:500;">รายงานสรุปรายเดือน</div><div style="font-size:11px;color:var(--tx2);">ส่งอัตโนมัติต้นเดือน</div></div><label class="tgl"><input type="checkbox" checked/><span class="sldr"></span></label></div>
+              <div style="display:flex;justify-content:flex-end;margin-top:12px;"><button class="btn bp2 bsm" onclick="showT('บันทึกสำเร็จ','ok')"><i class="ti ti-check"></i> บันทึก</button></div>
+            </div></div>
+            <div class="panel" id="panel-backup"><div class="card">
+              <div class="ct"><i class="ti ti-database"></i>สำรองและกู้คืนข้อมูล</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="background:#F8FAFC;border:1px solid var(--bdr);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;"><div><div style="font-weight:500;font-size:13px;">สำรองข้อมูลทั้งหมด</div><div style="font-size:11px;color:var(--tx2);margin-top:2px;">ดาวน์โหลดข้อมูลจาก Google Sheets</div></div><button class="btn bp2 bsm" onclick="exportBackup()"><i class="ti ti-download"></i> ดาวน์โหลด</button></div>
+                <div class="dbox"><div><div style="font-weight:500;color:var(--rd);font-size:13px;">ล้างข้อมูลทั้งหมด</div><div style="font-size:11px;color:var(--rd);margin-top:2px;">⚠️ ไม่สามารถกู้คืนได้</div></div><button class="btn bd bsm" onclick="if(confirm('ยืนยันล้างข้อมูล?'))clearAllData()"><i class="ti ti-trash"></i> ล้าง</button></div>
+              </div>
+              <div style="margin-top:12px;font-size:11px;color:var(--tx3);"><i class="ti ti-clock" style="font-size:12px;vertical-align:-2px;"></i> ข้อมูลบันทึกใน Google Sheets แบบ real-time</div>
+            </div></div>
+            <div class="panel" id="panel-api"><div class="card">
+              <div class="ct"><i class="ti ti-api"></i>การตั้งค่า Google Sheets</div>
+              <div class="fld"><label>Google Apps Script URL</label><input id="apiUrl" placeholder="https://script.google.com/macros/s/..."/></div>
+              <div style="background:#E6F1FB;border-radius:8px;padding:10px 12px;font-size:12px;color:var(--bl);margin-bottom:12px;"><i class="ti ti-info-circle" style="font-size:13px;vertical-align:-2px;margin-right:4px;"></i>URL นี้คือ Web App URL จาก Google Apps Script ที่ Deploy แล้ว</div>
+              <div style="display:flex;gap:8px;justify-content:flex-end;">
+                <button class="btn bs bsm" onclick="testAPI()"><i class="ti ti-wifi"></i> ทดสอบการเชื่อมต่อ</button>
+                <button class="btn bp2 bsm" onclick="saveApiUrl()"><i class="ti ti-check"></i> บันทึก URL</button>
+              </div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end appShell -->
+
+<!-- MODALS -->
+<div class="ov" id="addUserM"><div class="modal">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('addUserM')"><i class="ti ti-x"></i></button>
+  <div class="mt"><i class="ti ti-user-plus"></i>เพิ่มผู้ใช้งานใหม่</div>
+  <div class="g2"><div class="fld"><label>ชื่อ</label><input id="auF" placeholder="ชื่อ"/></div><div class="fld"><label>นามสกุล</label><input id="auL" placeholder="นามสกุล"/></div></div>
+  <div class="fld"><label>ที่อยู่</label><textarea id="auA" placeholder="บ้านเลขที่ / หมู่"></textarea></div>
+  <div class="fld"><label>คุ้มหมู่บ้าน</label><select id="auK"><option value="">-- เลือกคุ้ม --</option><option>คุ้มดอนหวาย</option><option>คุ้มโคกหลุมเงิน</option><option>คุ้มกิโลเก้า</option></select></div>
+  <div class="mf"><button class="btn bs bsm" onclick="closeM('addUserM')">ยกเลิก</button><button class="btn bp2 bsm" onclick="addUser()"><i class="ti ti-check"></i> บันทึก</button></div>
+</div></div>
+
+<div class="ov" id="editAuthM"><div class="modal">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('editAuthM')"><i class="ti ti-x"></i></button>
+  <div class="mt"><i class="ti ti-lock"></i>ยืนยันสิทธิ์แก้ไข</div>
+  <div class="fld"><label>ชื่อผู้ดูแลระบบ</label><input id="eaN" placeholder="กรอกชื่อ"/></div>
+  <div class="fld"><label>รหัสผ่าน</label><input type="password" id="eaP" placeholder="กรอกรหัสผ่าน"/></div>
+  <div class="mf"><button class="btn bs bsm" onclick="closeM('editAuthM')">ยกเลิก</button><button class="btn bp2 bsm" onclick="authEdit()"><i class="ti ti-arrow-right"></i> ยืนยัน</button></div>
+</div></div>
+
+<div class="ov" id="editUserM"><div class="modal">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('editUserM')"><i class="ti ti-x"></i></button>
+  <div class="mt"><i class="ti ti-pencil"></i>แก้ไขข้อมูลผู้ใช้งาน</div>
+  <div class="g2"><div class="fld"><label>ชื่อ</label><input id="euF"/></div><div class="fld"><label>นามสกุล</label><input id="euL"/></div></div>
+  <div class="fld"><label>ที่อยู่</label><textarea id="euA"></textarea></div>
+  <div class="fld"><label>คุ้ม</label><select id="euK"><option>คุ้มดอนหวาย</option><option>คุ้มโคกหลุมเงิน</option><option>คุ้มกิโลเก้า</option></select></div>
+  <div class="mf"><button class="btn bs bsm" onclick="closeM('editUserM')">ยกเลิก</button><button class="btn bp2 bsm" onclick="saveEU()"><i class="ti ti-check"></i> บันทึก</button></div>
+</div></div>
+
+<div class="ov" id="profileM"><div class="modal">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('profileM')"><i class="ti ti-x"></i></button>
+  <div class="mt"><i class="ti ti-id-badge"></i>ข้อมูลผู้ใช้งาน</div>
+  <div class="phdr"><div class="pav" id="ppAv">ส</div><div><div style="font-size:15px;font-weight:600;" id="ppN">—</div><div style="font-size:12px;color:var(--tx2);margin-top:2px;" id="ppC">—</div></div></div>
+  <div class="ir"><span style="color:var(--tx2);">ที่อยู่</span><span style="font-weight:500;" id="ppA">—</span></div>
+  <div class="ir"><span style="color:var(--tx2);">คุ้ม</span><span style="font-weight:500;" id="ppK">—</span></div>
+  <div class="ir"><span style="color:var(--tx2);">สถานะ</span><span id="ppS">—</span></div>
+  <div class="mf">
+    <button class="btn bs bsm" onclick="closeM('profileM')">ปิด</button>
+    <button class="btn bs bsm" onclick="closeM('profileM');if(authOK)openM('editUserM');else openM('editAuthM')"><i class="ti ti-pencil"></i> แก้ไข</button>
+    <button class="btn bp2 bsm" onclick="closeM('profileM');goto('meter',document.querySelector('[onclick*=meter]'))"><i class="ti ti-droplet"></i> ค่าน้ำ</button>
+  </div>
+</div></div>
+
+<div class="ov" id="billPrevM"><div class="modal" style="max-width:400px;">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('billPrevM')"><i class="ti ti-x"></i></button>
+  <div class="bpaper">
+    <div class="borg">ประปาบ้านดอนหวาย</div><div class="bsub2">บ้านดอนหวาย ต.สะเดา อ.นางรอง จ.บุรีรัมย์</div>
+    <div style="text-align:center;font-size:13px;font-weight:600;margin-top:10px;">ใบแจ้งค่าน้ำประปา</div>
+    <div style="text-align:center;font-size:11px;color:#888;margin-top:2px;" id="bpM">—</div>
+    <hr class="bdiv"/>
+    <div class="brow"><span>รหัสบิล</span><span id="bpId" style="font-weight:600;">—</span></div>
+    <div class="brow"><span>ชื่อผู้ใช้</span><span id="bpN" style="font-weight:600;">—</span></div>
+    <div class="brow"><span>คุ้ม</span><span id="bpK">—</span></div>
+    <div class="brow"><span>มิเตอร์ก่อน</span><span id="bpPr">—</span></div>
+    <div class="brow"><span>มิเตอร์หลัง</span><span id="bpCu">—</span></div>
+    <div class="brow"><span>หน่วยที่ใช้</span><span id="bpUn">—</span></div>
+    <div class="brow"><span>อัตราค่าน้ำ</span><span>8 บาท/หน่วย</span></div>
+    <div class="btot"><span>ยอดที่ต้องชำระ</span><span id="bpTo">—</span></div>
+    <div class="bfoot2">กรุณาชำระภายในวันที่ 15 ของเดือน<br>ขอบคุณที่ใช้บริการประปาบ้านดอนหวาย</div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:12px;">
+    <button class="btn bs bsm" style="flex:1;" onclick="closeM('billPrevM')">ปิด</button>
+    <button class="btn bp2 bsm" style="flex:1;" onclick="window.print()"><i class="ti ti-printer"></i> พิมพ์</button>
+  </div>
+</div></div>
+
+<div class="ov" id="payM"><div class="modal">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('payM')"><i class="ti ti-x"></i></button>
+  <div class="mt"><i class="ti ti-cash"></i>รับชำระเงิน</div>
+  <div class="ir"><span style="color:var(--tx2);">ชื่อผู้ใช้</span><span id="pmN" style="font-weight:500;">—</span></div>
+  <div class="ir"><span style="color:var(--tx2);">เดือน</span><span id="pmM" style="font-weight:500;">—</span></div>
+  <div class="ir"><span style="color:var(--tx2);">หน่วยที่ใช้</span><span id="pmU" style="font-weight:500;">—</span></div>
+  <div style="display:flex;justify-content:space-between;padding:12px 0 6px;font-size:15px;font-weight:700;color:var(--gm);border-top:1.5px dashed var(--bdr);margin-top:8px;"><span>ยอดที่ต้องชำระ</span><span id="pmT">—</span></div>
+  <div style="font-size:12px;color:var(--tx2);margin:10px 0 5px;">ช่องทางชำระเงิน</div>
+  <div style="display:flex;gap:7px;"><button class="mbtn sel" onclick="selMth(this)">เงินสด</button><button class="mbtn" onclick="selMth(this)">โอนเงิน</button><button class="mbtn" onclick="selMth(this)">อื่นๆ</button></div>
+  <div class="mf"><button class="btn bs bsm" onclick="closeM('payM')">ยกเลิก</button><button class="btn bp2 bsm" onclick="confirmPay()"><i class="ti ti-check"></i> ยืนยันชำระ</button></div>
+</div></div>
+
+<div class="ov" id="uploadDocM"><div class="modal">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('uploadDocM')"><i class="ti ti-x"></i></button>
+  <div class="mt"><i class="ti ti-upload"></i>อัปโหลดเอกสาร</div>
+  <div class="fld"><label>ชื่อเอกสาร</label><input id="udN" placeholder="กรอกชื่อเอกสาร"/></div>
+  <div class="fld"><label>หมวดหมู่</label><select id="udC"><option>ทะเบียน</option><option>รายงาน</option><option>ระเบียบ</option><option>อื่นๆ</option></select></div>
+  <div style="border:2px dashed var(--bdr);border-radius:8px;padding:20px;text-align:center;cursor:pointer;" onclick="showT('เลือกไฟล์...','ok')"><i class="ti ti-file-upload" style="font-size:28px;color:var(--gl);display:block;margin-bottom:6px;"></i><div style="font-size:13px;color:var(--tx2);">แตะเพื่อเลือกไฟล์</div><div style="font-size:11px;color:var(--tx3);margin-top:3px;">PDF, Word, Excel ไม่เกิน 10 MB</div></div>
+  <div class="mf"><button class="btn bs bsm" onclick="closeM('uploadDocM')">ยกเลิก</button><button class="btn bp2 bsm" onclick="uploadDoc()"><i class="ti ti-check"></i> บันทึก</button></div>
+</div></div>
+
+<div class="ov" id="addMemM"><div class="modal">
+  <div class="mhandle"></div><button class="cbtn" onclick="closeM('addMemM')"><i class="ti ti-x"></i></button>
+  <div class="mt"><i class="ti ti-user-plus"></i>เพิ่มสมาชิกคณะกรรมการ</div>
+  <div class="g2"><div class="fld"><label>ชื่อ</label><input id="amF"/></div><div class="fld"><label>นามสกุล</label><input id="amL"/></div></div>
+  <div class="fld"><label>ตำแหน่ง</label><select id="amR"><option>ประธาน</option><option>รองประธาน</option><option>เลขานุการ</option><option>เหรัญญิก</option><option>กรรมการ</option></select></div>
+  <div class="fld"><label>เบอร์โทร</label><input id="amT" placeholder="08X-XXX-XXXX"/></div>
+  <div class="mf"><button class="btn bs bsm" onclick="closeM('addMemM')">ยกเลิก</button><button class="btn bp2 bsm" onclick="addMem()"><i class="ti ti-check"></i> บันทึก</button></div>
+</div></div>
+
+<div class="toast" id="toast"><i class="ti ti-check" id="toastIco"></i><span id="toastMsg"></span></div>
+<div class="lding" id="ldOverlay"><div class="spinner"></div><div style="font-size:13px;color:var(--tx2);" id="ldTxt">กำลังโหลด...</div></div>
+
+<script>
+// ===== CONFIG =====
+var GS_URL = 'https://script.google.com/macros/s/AKfycbyhYHKM8-7smFZpYs-9VayCOANKj5mv4WvoRmrNB7qm0-YYczBTrMgrrNog6dyb4ViMQQ/exec';
+
+// ===== LOCAL DATA =====
+var DB={users:[],bills:[],mHist:[],committee:[
+  {name:'สมชาย ใจดี',role:'ประธาน',tel:'081-234-5678'},
+  {name:'วิไลวรรณ สุขใจ',role:'รองประธาน',tel:'089-876-5432'},
+  {name:'ประทีป ดีงาม',role:'เลขานุการ',tel:'062-111-2233'},
+  {name:'นงลักษณ์ มานะ',role:'เหรัญญิก',tel:'083-456-7890'},
+  {name:'วิชัย แสงทอง',role:'กรรมการ',tel:'090-321-4567'},
+],staff:[
+  {name:'สมชาย ใจดี',pos:'ผู้จัดการประปา',tel:'081-234-5678',note:'รับผิดชอบทั้งหมด'},
+  {name:'วิชัย มานะ',pos:'ช่างประปา',tel:'090-321-4567',note:'ดูแลระบบท่อ'},
+  {name:'นงลักษณ์ สุขใจ',pos:'เจ้าหน้าที่การเงิน',tel:'083-456-7890',note:'รับชำระเงิน'},
+  {name:'ประทีป ดีงาม',pos:'เจ้าหน้าที่มิเตอร์',tel:'062-111-2233',note:'อ่านมิเตอร์รายเดือน'},
+],docs:[
+  {name:'ทะเบียนผู้ใช้น้ำ 2568',cat:'ทะเบียน',type:'xlsx',date:'10 พ.ค. 2568',size:'124 KB'},
+  {name:'รายงานรายได้ เม.ย. 2568',cat:'รายงาน',type:'pdf',date:'1 พ.ค. 2568',size:'218 KB'},
+  {name:'ระเบียบการใช้น้ำประปา',cat:'ระเบียบ',type:'pdf',date:'1 ม.ค. 2568',size:'95 KB'},
+]};
+var KHUM=['คุ้มดอนหวาย','คุ้มโคกหลุมเงิน','คุ้มกิโลเก้า'];
+var KHUM_GR=['linear-gradient(135deg,#1D9E75,#085041)','linear-gradient(135deg,#378ADD,#185FA5)','linear-gradient(135deg,#BA7517,#854F0B)'];
+var KBADGE=['bg2','bb','bar2'];
+var TYPE_C={pdf:['#FCEBEB','var(--rd)','ti-file-type-pdf'],xlsx:['#EAF3DE','#3B6D11','ti-file-spreadsheet'],docx:['var(--bp)','var(--bl)','ti-file-word']};
+var curEditIdx=-1,curPayIdx=-1,authOK=false;
+var monthData=[
+  {m:'ม.ค.',income:33200,unit:4150,paid:128,debt:20},
+  {m:'ก.พ.',income:34100,unit:4263,paid:130,debt:18},
+  {m:'มี.ค.',income:35600,unit:4450,paid:132,debt:16},
+  {m:'เม.ย.',income:36800,unit:4600,paid:135,debt:13},
+  {m:'พ.ค.',income:0,unit:4806,paid:0,debt:0},
+];
+
+// ===== GOOGLE SHEETS API =====
+function gsAPI(params){
+  return new Promise(function(resolve,reject){
+    var url=GS_URL+'?'+Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);}).join('&');
+    var script=document.createElement('script');
+    var cbName='gs_cb_'+Date.now();
+    window[cbName]=function(data){delete window[cbName];document.head.removeChild(script);resolve(data);};
+    script.onerror=function(){delete window[cbName];document.head.removeChild(script);reject(new Error('Network error'));};
+    script.src=url+'&callback='+cbName;
+    document.head.appendChild(script);
+  });
+}
+
+function gsFetch(sheetName){
+  return fetch(GS_URL+'?action=read&sheet='+sheetName)
+    .then(function(r){return r.json();})
+    .then(function(d){return d.ok?d.data:[];})
+    .catch(function(){return [];});
+}
+
+function gsWrite(sheetName,rows){
+  return fetch(GS_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:'action=write&sheet='+encodeURIComponent(sheetName)+'&rows='+encodeURIComponent(JSON.stringify(rows))
+  }).then(function(r){return r.json();}).catch(function(){return {ok:false};});
+}
+
+function gsAppend(sheetName,row){
+  return fetch(GS_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:'action=append&sheet='+encodeURIComponent(sheetName)+'&row='+encodeURIComponent(JSON.stringify(row))
+  }).then(function(r){return r.json();}).catch(function(){return {ok:false};});
+}
+
+// ===== LOAD DATA FROM SHEETS =====
+function setSyncStatus(status,msg){
+  var dot=document.getElementById('syncDot');
+  var txt=document.getElementById('syncTxt');
+  dot.className='sync-dot '+(status==='ok'?'dot-ok':status==='err'?'dot-err':'dot-loading');
+  txt.textContent=msg;
+  if(status!=='loading'){
+    var d=new Date();
+    document.getElementById('syncTime').textContent='อัปเดต: '+d.toLocaleTimeString('th-TH');
+  }
+}
+
+function loadAll(){
+  setSyncStatus('loading','กำลังโหลดข้อมูลจาก Google Sheets...');
+  showLD('กำลังโหลดข้อมูล...');
+  Promise.all([gsFetch('users'),gsFetch('bills'),gsFetch('meter_hist')])
+    .then(function(results){
+      var users=results[0],bills=results[1],mhist=results[2];
+      if(users.length>0){
+        DB.users=users.map(function(r){return{id:r.id||r.uid||'',first:r.first||r.firstname||'',last:r.last||r.lastname||'',addr:r.addr||r.address||'',khum:r.khum||'',status:r.status||'ชำระแล้ว',prev:parseFloat(r.prev||0)||0};});
+      }
+      if(bills.length>0){
+        DB.bills=bills.map(function(r){return{billId:r.billId||r.id||'',uid:r.uid||'',name:r.name||'',addr:r.addr||'',khum:r.khum||'',prev:parseFloat(r.prev)||0,curr:parseFloat(r.curr)||0,unit:parseFloat(r.unit)||0,total:parseFloat(r.total)||0,status:r.status||'ค้างชำระ'};});
+      }
+      if(mhist.length>0){
+        DB.mHist=mhist.map(function(r){return{id:r.id||'',name:r.name||'',khum:r.khum||'',prev:parseFloat(r.prev)||0,curr:parseFloat(r.curr)||0,unit:parseFloat(r.unit)||0,bill:parseFloat(r.bill)||0};});
+      }
+      hideLD();
+      setSyncStatus('ok','เชื่อมต่อ Google Sheets สำเร็จ — ข้อมูลล่าสุด');
+      refreshAll();
+      showT('โหลดข้อมูลสำเร็จ','ok');
+    })
+    .catch(function(err){
+      hideLD();
+      setSyncStatus('err','เชื่อมต่อไม่ได้ — ใช้ข้อมูลชั่วคราว');
+      loadFallback();
+      showT('ไม่สามารถเชื่อมต่อ Sheets ได้ ใช้ข้อมูลชั่วคราว','err');
+    });
+}
+
+function loadFallback(){
+  if(DB.users.length===0){
+    DB.users=[
+      {id:'DW001',first:'สมชาย',last:'ใจดี',addr:'12 ม.1',khum:'คุ้มดอนหวาย',status:'ชำระแล้ว',prev:1240},
+      {id:'DW002',first:'สมหญิง',last:'รักดี',addr:'34 ม.1',khum:'คุ้มดอนหวาย',status:'ค้างชำระ',prev:875},
+      {id:'DW003',first:'บุญมี',last:'ขยัน',addr:'15 ม.1',khum:'คุ้มดอนหวาย',status:'ค้างชำระ',prev:640},
+      {id:'KL001',first:'วิชัย',last:'มานะ',addr:'7 ม.3',khum:'คุ้มโคกหลุมเงิน',status:'ชำระแล้ว',prev:2100},
+      {id:'KL002',first:'นงลักษณ์',last:'สุขใจ',addr:'22 ม.3',khum:'คุ้มโคกหลุมเงิน',status:'ชำระแล้ว',prev:560},
+      {id:'KL003',first:'สุรชัย',last:'แสงทอง',addr:'9 ม.3',khum:'คุ้มโคกหลุมเงิน',status:'ค้างชำระ',prev:330},
+      {id:'K9001',first:'ประทีป',last:'ดีงาม',addr:'5 ม.9',khum:'คุ้มกิโลเก้า',status:'ค้างชำระ',prev:1780},
+      {id:'K9002',first:'มาลี',last:'สว่าง',addr:'18 ม.9',khum:'คุ้มกิโลเก้า',status:'ชำระแล้ว',prev:430},
+    ];
+  }
+  if(DB.bills.length===0){
+    DB.bills=[
+      {billId:'B250501',uid:'DW001',name:'สมชาย ใจดี',addr:'12 ม.1',khum:'คุ้มดอนหวาย',prev:1190,curr:1240,unit:50,total:400,status:'ชำระแล้ว'},
+      {billId:'B250502',uid:'DW002',name:'สมหญิง รักดี',addr:'34 ม.1',khum:'คุ้มดอนหวาย',prev:820,curr:875,unit:55,total:440,status:'ค้างชำระ'},
+      {billId:'B250503',uid:'KL001',name:'วิชัย มานะ',addr:'7 ม.3',khum:'คุ้มโคกหลุมเงิน',prev:2050,curr:2100,unit:50,total:400,status:'ชำระแล้ว'},
+      {billId:'B250504',uid:'KL002',name:'นงลักษณ์ สุขใจ',addr:'22 ม.3',khum:'คุ้มโคกหลุมเงิน',prev:510,curr:560,unit:50,total:400,status:'ชำระแล้ว'},
+      {billId:'B250505',uid:'K9001',name:'ประทีป ดีงาม',addr:'5 ม.9',khum:'คุ้มกิโลเก้า',prev:1740,curr:1780,unit:40,total:320,status:'ค้างชำระ'},
+      {billId:'B250506',uid:'K9002',name:'มาลี สว่าง',addr:'18 ม.9',khum:'คุ้มกิโลเก้า',prev:388,curr:430,unit:42,total:336,status:'ชำระแล้ว'},
+    ];
+  }
+  refreshAll();
+}
+
+// ===== AUTH =====
+function doLogin(){
+  var u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();
+  var err=document.getElementById('loginErr');
+  if(u==='admin'&&p==='1234'){
+    err.style.display='none';
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('appShell').style.display='';
+    document.getElementById('apiUrl').value=GS_URL;
+    checkMobile();loadAll();
+  }else{err.style.display='block';}
+}
+document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+function doLogout(){document.getElementById('appShell').style.display='none';document.getElementById('loginPage').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';}
+
+// ===== SIDEBAR =====
+var isMobile=false;
+function checkMobile(){
+  isMobile=window.innerWidth<768;
+  var sb=document.getElementById('sidebar'),ma=document.getElementById('mainArea');
+  if(isMobile){sb.classList.add('hidden');ma.style.marginLeft='0';}
+  else{sb.classList.remove('hidden');ma.style.marginLeft='220px';}
+  document.getElementById('sbOv').classList.remove('show');
+}
+window.addEventListener('resize',checkMobile);
+function toggleSB(){
+  var sb=document.getElementById('sidebar'),ov=document.getElementById('sbOv'),ma=document.getElementById('mainArea');
+  if(isMobile){var show=sb.classList.contains('hidden');if(show){sb.classList.remove('hidden');ov.classList.add('show');}else{sb.classList.add('hidden');ov.classList.remove('show');}}
+  else{var hidden=sb.classList.contains('hidden');if(hidden){sb.classList.remove('hidden');ma.style.marginLeft='220px';}else{sb.classList.add('hidden');ma.style.marginLeft='0';}}
+}
+function closeSB(){document.getElementById('sidebar').classList.add('hidden');document.getElementById('sbOv').classList.remove('show');}
+
+// ===== NAV =====
+var PLB={home:'หน้าหลัก',users:'จัดการผู้ใช้',meter:'บันทึกค่าน้ำ',bill:'บิลใบเสร็จ',pay:'ชำระเงิน',report:'รายงาน',docs:'เอกสาร',directory:'ทำเนียบ',settings:'ตั้งค่า'};
+function goto(page,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('show');});
+  document.getElementById('page-'+page).classList.add('show');
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active');});
+  if(el)el.classList.add('active');
+  document.getElementById('bcCur').textContent=PLB[page]||page;
+  if(isMobile)closeSB();
+  if(page==='home')refreshHome();
+  else if(page==='users')renderUsers();
+  else if(page==='meter')updateMU();
+  else if(page==='bill')renderBills(DB.bills);
+  else if(page==='pay')renderPay();
+  else if(page==='report')renderReport('monthly');
+  else if(page==='docs')renderDocs(DB.docs);
+  else if(page==='directory'){renderCommittee();renderStaff();}
+}
+
+// ===== MODAL =====
+function openM(id){document.getElementById(id).classList.add('show');}
+function closeM(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.ov').forEach(function(o){o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});});
+
+// ===== TOAST =====
+var tTimer=null;
+function showT(msg,type){
+  var t=document.getElementById('toast'),ico=document.getElementById('toastIco');
+  t.className='toast show '+(type||'ok');
+  ico.className=type==='err'?'ti ti-alert-circle':type==='loading'?'ti ti-loader':'ti ti-check';
+  document.getElementById('toastMsg').textContent=msg;
+  clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove('show');},3000);
+}
+
+// ===== LOADING =====
+function showLD(msg){var l=document.getElementById('ldOverlay');document.getElementById('ldTxt').textContent=msg||'กำลังโหลด...';l.classList.add('show');}
+function hideLD(){document.getElementById('ldOverlay').classList.remove('show');}
+
+// ===== REFRESH ALL =====
+function refreshAll(){
+  refreshHome();renderUsers();updateMU();renderBills(DB.bills);
+  renderPay();renderReport('monthly');renderDocs(DB.docs);renderCommittee();renderStaff();
+  renderMH(DB.mHist);
+  monthData[4].income=DB.bills.filter(function(b){return b.status==='ชำระแล้ว';}).reduce(function(s,b){return s+b.total;},0);
+  monthData[4].paid=DB.bills.filter(function(b){return b.status==='ชำระแล้ว';}).length;
+  monthData[4].debt=DB.users.filter(function(u){return u.status==='ค้างชำระ';}).length;
+}
+
+// ===== HOME =====
+function refreshHome(){
+  var total=DB.users.length,debt=DB.users.filter(function(u){return u.status==='ค้างชำระ';}).length,paid=total-debt;
+  var income=DB.bills.filter(function(b){return b.status==='ชำระแล้ว';}).reduce(function(s,b){return s+b.total;},0);
+  document.getElementById('sTotal').textContent=total;document.getElementById('sDebt').textContent=debt;
+  document.getElementById('sPaid').textContent=paid;document.getElementById('sIncome').textContent=income.toLocaleString();
+  var html='';
+  KHUM.forEach(function(k,i){
+    var ku=DB.users.filter(function(u){return u.khum===k;});
+    var ki=DB.bills.filter(function(b){return b.khum===k&&b.status==='ชำระแล้ว';}).reduce(function(s,b){return s+b.total;},0);
+    html+='<div class="kc"><div class="kh" style="background:'+KHUM_GR[i]+'"><div style="font-size:14px;font-weight:600;">'+k+'</div></div>'
+      +'<div class="kb"><div class="kr"><span style="font-size:12px;color:var(--tx2);">จำนวนผู้ใช้</span><span style="font-weight:600;">'+ku.length+' ครัวเรือน</span></div>'
+      +'<div class="kr"><span style="font-size:12px;color:var(--tx2);">รายได้เดือนนี้</span><span style="font-weight:600;color:var(--gm);">'+ki.toLocaleString()+' บาท</span></div></div></div>';
+  });
+  document.getElementById('khumCards').innerHTML=html;
+}
+
+// ===== USERS =====
+function renderUsers(){
+  var q=(document.getElementById('uSearch').value||'').toLowerCase();
+  var list=DB.users.filter(function(u){return!q||(u.first+' '+u.last).toLowerCase().includes(q)||u.id.toLowerCase().includes(q);});
+  var html='';
+  list.forEach(function(u){
+    var gi=DB.users.indexOf(u),kc=KHUM.indexOf(u.khum);
+    html+='<tr><td><span class="badge '+(KBADGE[kc]||'bg2')+'" style="font-size:10px;">'+u.id+'</span></td>'
+      +'<td style="font-weight:500;white-space:nowrap;">'+u.first+' '+u.last+'</td>'
+      +'<td class="hm" style="font-size:12px;color:var(--tx2);">'+u.addr+'</td>'
+      +'<td style="font-size:11px;">'+u.khum.replace('คุ้ม','')+'</td>'
+      +'<td style="text-align:center;"><button class="btn bs bxs" onclick="viewProfile('+gi+')"><i class="ti ti-eye" style="font-size:12px;"></i></button></td></tr>';
+  });
+  document.getElementById('userTb').innerHTML=html||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--tx3);">ไม่พบข้อมูล</td></tr>';
+}
+
+function addUser(){
+  var f=document.getElementById('auF').value.trim(),l=document.getElementById('auL').value.trim(),a=document.getElementById('auA').value.trim(),k=document.getElementById('auK').value;
+  if(!f||!l||!k){showT('กรุณากรอกข้อมูลให้ครบ','err');return;}
+  var pref=k==='คุ้มดอนหวาย'?'DW':k==='คุ้มโคกหลุมเงิน'?'KL':'K9';
+  var num=String(DB.users.filter(function(u){return u.id.startsWith(pref);}).length+1).padStart(3,'0');
+  var newUser={id:pref+num,first:f,last:l,addr:a||'—',khum:k,status:'ชำระแล้ว',prev:0};
+  showT('กำลังบันทึก...','loading');
+  gsAppend('users',{id:newUser.id,first:newUser.first,last:newUser.last,addr:newUser.addr,khum:newUser.khum,status:newUser.status,prev:newUser.prev})
+    .then(function(r){
+      if(r.ok){DB.users.push(newUser);closeM('addUserM');renderUsers();showT('เพิ่มผู้ใช้ '+f+' '+l+' สำเร็จ','ok');}
+      else{DB.users.push(newUser);closeM('addUserM');renderUsers();showT('บันทึกแล้ว (offline)','ok');}
+    });
+  ['auF','auL','auA'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('auK').value='';
+}
+
+function authEdit(){
+  var n=document.getElementById('eaN').value.trim(),p=document.getElementById('eaP').value.trim();
+  if(!n||!p){showT('กรุณากรอกให้ครบ','err');return;}
+  if((n==='ผู้ดูแลระบบ'||n==='admin')&&p==='1234'){authOK=true;closeM('editAuthM');if(curEditIdx>=0)openEditUser(curEditIdx);else showT('ยืนยันสิทธิ์สำเร็จ','ok');}
+  else showT('ข้อมูลไม่ถูกต้อง','err');
+}
+
+function viewProfile(i){
+  var u=DB.users[i];curEditIdx=i;
+  document.getElementById('ppAv').textContent=u.first.charAt(0);
+  document.getElementById('ppN').textContent=u.first+' '+u.last;
+  document.getElementById('ppC').textContent='รหัส: '+u.id;
+  document.getElementById('ppA').textContent=u.addr;
+  document.getElementById('ppK').textContent=u.khum;
+  document.getElementById('ppS').innerHTML=u.status==='ชำระแล้ว'?'<span class="badge bg2">ชำระแล้ว</span>':'<span class="badge br">ค้างชำระ</span>';
+  openM('profileM');
+}
+
+function openEditUser(i){
+  var u=DB.users[i];
+  document.getElementById('euF').value=u.first;document.getElementById('euL').value=u.last;
+  document.getElementById('euA').value=u.addr;document.getElementById('euK').value=u.khum;
+  openM('editUserM');
+}
+
+function saveEU(){
+  if(curEditIdx<0)return;
+  var u=DB.users[curEditIdx];
+  u.first=document.getElementById('euF').value.trim()||u.first;
+  u.last=document.getElementById('euL').value.trim()||u.last;
+  u.addr=document.getElementById('euA').value.trim()||u.addr;
+  u.khum=document.getElementById('euK').value||u.khum;
+  showT('กำลังบันทึก...','loading');
+  gsWrite('users',DB.users.map(function(x){return{id:x.id,first:x.first,last:x.last,addr:x.addr,khum:x.khum,status:x.status,prev:x.prev};}))
+    .then(function(){closeM('editUserM');renderUsers();showT('แก้ไขข้อมูลสำเร็จ','ok');});
+}
+
+// ===== METER =====
+function updateMU(){
+  var k=document.getElementById('mKhum').value;
+  var sel=document.getElementById('mUser');
+  sel.innerHTML='<option value="">-- เลือกผู้ใช้ --</option>';
+  DB.users.filter(function(u){return!k||u.khum===k;}).forEach(function(u){sel.innerHTML+='<option value="'+u.id+'">'+u.id+' — '+u.first+' '+u.last+'</option>';});
+  document.getElementById('mPrev').value='';document.getElementById('mCurr').value='';calcM();
+}
+function loadPrev(){
+  var u=DB.users.find(function(x){return x.id===document.getElementById('mUser').value;});
+  document.getElementById('mPrev').value=u?u.prev:'';document.getElementById('mCurr').value='';calcM();
+}
+function calcM(){
+  var prev=parseFloat(document.getElementById('mPrev').value)||0,curr=parseFloat(document.getElementById('mCurr').value)||0,rate=parseFloat(document.getElementById('mRate').value)||8;
+  var unit=Math.max(0,curr-prev);
+  document.getElementById('mUnit').textContent=unit;document.getElementById('mBill').textContent=(unit*rate).toLocaleString()+' บาท';
+}
+function saveMeter(){
+  var id=document.getElementById('mUser').value,curr=parseFloat(document.getElementById('mCurr').value)||0,rate=parseFloat(document.getElementById('mRate').value)||8;
+  if(!id||!curr){showT('กรุณาเลือกผู้ใช้และกรอกเลขมิเตอร์','err');return;}
+  var u=DB.users.find(function(x){return x.id===id;});
+  var prev=u.prev,unit=Math.max(0,curr-prev),bill=unit*rate;
+  var rec={id:u.id,name:u.first+' '+u.last,khum:u.khum,prev:prev,curr:curr,unit:unit,bill:bill};
+  DB.mHist.unshift(rec);u.prev=curr;
+  var ex=DB.bills.find(function(b){return b.uid===id;});
+  if(ex){ex.prev=prev;ex.curr=curr;ex.unit=unit;ex.total=bill;ex.status='ค้างชำระ';}
+  else DB.bills.push({billId:'B25'+String(DB.bills.length+1).padStart(4,'0'),uid:u.id,name:u.first+' '+u.last,addr:u.addr,khum:u.khum,prev:prev,curr:curr,unit:unit,total:bill,status:'ค้างชำระ'});
+  showT('กำลังบันทึก...','loading');
+  Promise.all([
+    gsAppend('meter_hist',rec),
+    gsWrite('users',DB.users.map(function(x){return{id:x.id,first:x.first,last:x.last,addr:x.addr,khum:x.khum,status:x.status,prev:x.prev};})),
+    gsWrite('bills',DB.bills.map(function(x){return{billId:x.billId,uid:x.uid,name:x.name,addr:x.addr,khum:x.khum,prev:x.prev,curr:x.curr,unit:x.unit,total:x.total,status:x.status};}))
+  ]).then(function(){renderMH(DB.mHist);clearMF();showT('บันทึกมิเตอร์ '+u.first+' '+u.last+' สำเร็จ','ok');setSyncStatus('ok','บันทึกลง Google Sheets แล้ว');});
+}
+function clearMF(){document.getElementById('mUser').value='';document.getElementById('mPrev').value='';document.getElementById('mCurr').value='';calcM();}
+function renderMH(list){
+  var html='';
+  list.forEach(function(r){html+='<tr><td><span class="badge bg2" style="font-size:10px;">'+r.id+'</span></td><td style="white-space:nowrap;">'+r.name+'</td><td class="hm" style="font-size:12px;color:var(--tx2);">'+r.khum+'</td><td>'+r.prev+'</td><td>'+r.curr+'</td><td style="color:var(--bl);font-weight:500;">'+r.unit+'</td><td style="color:var(--gm);font-weight:500;">'+r.bill.toLocaleString()+'</td></tr>';});
+  document.getElementById('mHistTb').innerHTML=html||'<tr><td colspan="7" style="text-align:center;padding:16px;color:var(--tx3);">ยังไม่มีการบันทึก</td></tr>';
+}
+function filterMH(q){q=q.toLowerCase();renderMH(DB.mHist.filter(function(r){return r.name.toLowerCase().includes(q)||r.id.toLowerCase().includes(q);}));}
+
+// ===== BILLS =====
+function renderBills(list){
+  var html='';
+  list.forEach(function(b){
+    var gi=DB.bills.indexOf(b);
+    html+='<tr><td style="font-size:10px;font-weight:600;color:var(--tx2);">'+b.billId+'</td>'
+      +'<td style="font-weight:500;white-space:nowrap;">'+b.name+'</td>'
+      +'<td class="hm" style="font-size:12px;color:var(--tx2);">'+b.khum+'</td>'
+      +'<td style="color:var(--bl);font-weight:500;">'+b.unit+'</td>'
+      +'<td style="color:var(--gm);font-weight:500;white-space:nowrap;">'+b.total.toLocaleString()+'</td>'
+      +'<td><span class="badge '+(b.status==='ชำระแล้ว'?'bg2':'br')+'" style="font-size:10px;">'+b.status+'</span></td>'
+      +'<td style="text-align:center;"><div style="display:flex;gap:4px;justify-content:center;">'
+      +'<button class="btn bs bxs" onclick="prevBill('+gi+')"><i class="ti ti-eye" style="font-size:11px;"></i></button>'
+      +'<button class="btn bs bxs" onclick="showT(\'พิมพ์บิล '+b.billId+'\',\'ok\')"><i class="ti ti-printer" style="font-size:11px;"></i></button>'
+      +'</div></td></tr>';
+  });
+  document.getElementById('billTb').innerHTML=html||'<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--tx3);">ไม่พบข้อมูล</td></tr>';
+}
+function filterBills(q){
+  q=(q||'').toLowerCase();var st=document.getElementById('billStat').value;
+  renderBills(DB.bills.filter(function(b){return(!q||b.name.toLowerCase().includes(q)||b.uid.toLowerCase().includes(q)||b.billId.toLowerCase().includes(q))&&(!st||b.status===st);}));
+}
+function prevBill(i){
+  var b=DB.bills[i];
+  document.getElementById('bpM').textContent='เดือน พฤษภาคม 2568';
+  document.getElementById('bpId').textContent=b.billId;document.getElementById('bpN').textContent=b.name;
+  document.getElementById('bpK').textContent=b.khum;document.getElementById('bpPr').textContent=b.prev+' หน่วย';
+  document.getElementById('bpCu').textContent=b.curr+' หน่วย';document.getElementById('bpUn').textContent=b.unit+' หน่วย';
+  document.getElementById('bpTo').textContent=b.total.toLocaleString()+' บาท';openM('billPrevM');
+}
+
+// ===== PAY =====
+function renderPay(){
+  var du=DB.users.filter(function(u){return u.status==='ค้างชำระ';});
+  var pb=DB.bills.filter(function(b){return b.status==='ชำระแล้ว';});
+  var dt=DB.bills.filter(function(b){return b.status==='ค้างชำระ';}).reduce(function(s,b){return s+b.total;},0);
+  var pt=pb.reduce(function(s,b){return s+b.total;},0);
+  document.getElementById('psDebt').textContent=du.length+' ราย';document.getElementById('psDA').textContent=dt.toLocaleString()+' บาท';
+  document.getElementById('psPaid').textContent=pb.length+' ราย';document.getElementById('psPA').textContent=pt.toLocaleString()+' บาท';
+  document.getElementById('psTot').textContent=pt.toLocaleString();
+  renderDebts(du);
+}
+function renderDebts(list){
+  var html='';
+  list.forEach(function(u){
+    var b=DB.bills.find(function(x){return x.uid===u.id;});
+    var gi=DB.users.indexOf(u);
+    html+='<tr><td><span class="badge bg2" style="font-size:10px;">'+u.id+'</span></td>'
+      +'<td style="font-weight:500;white-space:nowrap;">'+u.first+' '+u.last+'</td>'
+      +'<td class="hm" style="font-size:12px;color:var(--tx2);">'+u.khum+'</td>'
+      +'<td style="color:var(--rd);font-weight:500;white-space:nowrap;">'+(b?b.total.toLocaleString():'—')+' บาท</td>'
+      +'<td style="text-align:center;"><button class="btn bp2 bxs" onclick="openPay('+gi+')"><i class="ti ti-cash" style="font-size:11px;"></i> รับชำระ</button></td></tr>';
+  });
+  document.getElementById('debtTb').innerHTML=html||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--tx2);">ไม่มีรายการค้างชำระ 🎉</td></tr>';
+}
+function filterDebts(q){
+  q=(q||'').toLowerCase();var k=document.getElementById('debtKhum').value;
+  renderDebts(DB.users.filter(function(u){return u.status==='ค้างชำระ'&&(!k||u.khum===k)&&(!q||(u.first+' '+u.last).toLowerCase().includes(q)||u.id.toLowerCase().includes(q));}));
+}
+function openPay(i){
+  curPayIdx=i;var u=DB.users[i];var b=DB.bills.find(function(x){return x.uid===u.id;});
+  document.getElementById('pmN').textContent=u.first+' '+u.last;
+  document.getElementById('pmM').textContent='พฤษภาคม 2568';
+  document.getElementById('pmU').textContent=(b?b.unit:'-')+' หน่วย';
+  document.getElementById('pmT').textContent=(b?b.total.toLocaleString():'-')+' บาท';
+  openM('payM');
+}
+function selMth(btn){document.querySelectorAll('.mbtn').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');}
+function confirmPay(){
+  if(curPayIdx<0)return;
+  var u=DB.users[curPayIdx];u.status='ชำระแล้ว';
+  var b=DB.bills.find(function(x){return x.uid===u.id;});if(b)b.status='ชำระแล้ว';
+  showT('กำลังบันทึก...','loading');
+  gsWrite('bills',DB.bills.map(function(x){return{billId:x.billId,uid:x.uid,name:x.name,addr:x.addr,khum:x.khum,prev:x.prev,curr:x.curr,unit:x.unit,total:x.total,status:x.status};}))
+    .then(function(){
+      gsWrite('users',DB.users.map(function(x){return{id:x.id,first:x.first,last:x.last,addr:x.addr,khum:x.khum,status:x.status,prev:x.prev};}));
+      closeM('payM');renderPay();showT('รับชำระจาก '+u.first+' สำเร็จ','ok');setSyncStatus('ok','บันทึกลง Google Sheets แล้ว');curPayIdx=-1;
+    });
+}
+
+// ===== REPORT =====
+function setRT(tab,btn){
+  ['rbtM','rbtK','rbtD'].forEach(function(id){document.getElementById(id).className='btn bs bsm';});
+  btn.className='btn bp2 bsm';renderReport(tab);
+}
+function renderReport(tab){
+  var dt=DB.bills.filter(function(b){return b.status==='ค้างชำระ';}).reduce(function(s,b){return s+b.total;},0);
+  document.getElementById('rDebt').textContent=dt.toLocaleString();
+  monthData[4].income=DB.bills.filter(function(b){return b.status==='ชำระแล้ว';}).reduce(function(s,b){return s+b.total;},0);
+  if(tab==='monthly'){
+    document.getElementById('rCT').textContent='รายได้รายเดือน';document.getElementById('rTT').textContent='ตารางรายเดือน';
+    var maxI=Math.max.apply(null,monthData.map(function(d){return d.income;}));
+    var ch='';monthData.forEach(function(d){var h=Math.max(8,Math.round((d.income/(maxI||1))*130));ch+='<div class="bw"><div class="bval">'+Math.round(d.income/1000)+'k</div><div class="bar2c" style="height:'+h+'px;background:var(--g);"></div><div class="blbl">'+d.m+'</div></div>';});
+    document.getElementById('rChart').innerHTML=ch;
+    document.getElementById('rThead').innerHTML='<tr><th>เดือน</th><th>รายได้</th><th class="hm">หน่วยน้ำ</th><th>ชำระแล้ว</th><th>ค้างชำระ</th></tr>';
+    var tb='';monthData.forEach(function(d){tb+='<tr><td>'+d.m+'</td><td style="color:var(--gm);font-weight:500;">'+d.income.toLocaleString()+'</td><td class="hm">'+d.unit.toLocaleString()+'</td><td style="color:var(--g);">'+d.paid+'</td><td style="color:var(--rd);">'+d.debt+'</td></tr>';});
+    document.getElementById('rTbody').innerHTML=tb;
+  }else if(tab==='khum'){
+    document.getElementById('rCT').textContent='รายได้รายคุ้ม';document.getElementById('rTT').textContent='ตารางรายคุ้ม';
+    var kd=KHUM.map(function(k){return{khum:k,users:DB.users.filter(function(u){return u.khum===k;}).length,income:DB.bills.filter(function(b){return b.khum===k&&b.status==='ชำระแล้ว';}).reduce(function(s,b){return s+b.total;},0),paid:DB.users.filter(function(u){return u.khum===k&&u.status==='ชำระแล้ว';}).length,debt:DB.users.filter(function(u){return u.khum===k&&u.status==='ค้างชำระ';}).length};});
+    var colors=['var(--g)','var(--bl)','var(--am)'];var maxK=Math.max.apply(null,kd.map(function(d){return d.income;}));
+    var ch='';kd.forEach(function(d,i){var h=Math.max(8,Math.round((d.income/(maxK||1))*130));ch+='<div class="bw"><div class="bval">'+Math.round(d.income/1000)+'k</div><div class="bar2c" style="height:'+h+'px;background:'+colors[i]+';"></div><div class="blbl" style="font-size:9px;">'+d.khum.replace('คุ้ม','')+'</div></div>';});
+    document.getElementById('rChart').innerHTML=ch;
+    document.getElementById('rThead').innerHTML='<tr><th>คุ้ม</th><th>ผู้ใช้</th><th>รายได้</th><th>ชำระแล้ว</th><th>ค้างชำระ</th></tr>';
+    var tb='';kd.forEach(function(d){tb+='<tr><td style="font-size:12px;">'+d.khum+'</td><td>'+d.users+'</td><td style="color:var(--gm);font-weight:500;">'+d.income.toLocaleString()+'</td><td style="color:var(--g);">'+d.paid+'</td><td style="color:var(--rd);">'+d.debt+'</td></tr>';});
+    document.getElementById('rTbody').innerHTML=tb;
+  }else{
+    document.getElementById('rCT').textContent='รายการค้างชำระ';document.getElementById('rChart').innerHTML='<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--tx3);font-size:12px;">ไม่มีกราฟ</div>';
+    document.getElementById('rTT').textContent='รายการค้างชำระ';
+    document.getElementById('rThead').innerHTML='<tr><th>รหัส</th><th>ชื่อ</th><th class="hm">คุ้ม</th><th>ยอดค้าง</th></tr>';
+    var dbu=DB.users.filter(function(u){return u.status==='ค้างชำระ';});
+    var tb='';dbu.forEach(function(u){var b=DB.bills.find(function(x){return x.uid===u.id;});tb+='<tr><td><span class="badge bg2" style="font-size:10px;">'+u.id+'</span></td><td style="font-weight:500;white-space:nowrap;">'+u.first+' '+u.last+'</td><td class="hm" style="font-size:12px;color:var(--tx2);">'+u.khum+'</td><td style="color:var(--rd);font-weight:500;">'+(b?b.total.toLocaleString():'-')+'</td></tr>';});
+    document.getElementById('rTbody').innerHTML=tb||'<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--tx2);">ไม่มีรายการค้างชำระ</td></tr>';
+  }
+}
+
+// ===== DOCS =====
+function renderDocs(list){
+  var cats=[...new Set(list.map(function(d){return d.cat;}))];
+  var html='';
+  cats.forEach(function(cat){
+    var cl=list.filter(function(d){return d.cat===cat;});
+    html+='<div style="margin-bottom:16px;"><div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:8px;display:flex;align-items:center;gap:5px;"><i class="ti ti-folder" style="color:var(--g);"></i>'+cat+'</div><div class="dg">';
+    cl.forEach(function(d){
+      var idx=DB.docs.indexOf(d),tc=TYPE_C[d.type]||['#F4F6F8','var(--tx2)','ti-file'];
+      html+='<div class="dc"><div class="di" style="background:'+tc[0]+';"><i class="ti '+tc[2]+'" style="color:'+tc[1]+';font-size:22px;"></i></div>'
+        +'<div class="dn">'+d.name+'</div><div class="dm">'+d.date+'</div>'
+        +'<div style="display:flex;gap:5px;margin-top:8px;">'
+        +'<button class="btn bs bxs" onclick="showT(\'ดาวน์โหลด: '+d.name+'\',\'ok\')"><i class="ti ti-download" style="font-size:11px;"></i></button>'
+        +'<button class="btn bd bxs" onclick="delDoc('+idx+')"><i class="ti ti-trash" style="font-size:11px;"></i></button>'
+        +'</div></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('docCont').innerHTML=html||'<div style="text-align:center;padding:40px;color:var(--tx2);">ไม่พบเอกสาร</div>';
+}
+function filterDocs(q){q=(q||'').toLowerCase();var cat=document.getElementById('docCF').value;renderDocs(DB.docs.filter(function(d){return(!q||d.name.toLowerCase().includes(q))&&(!cat||d.cat===cat);}));}
+function uploadDoc(){
+  var n=document.getElementById('udN').value.trim(),c=document.getElementById('udC').value;
+  if(!n){showT('กรุณากรอกชื่อเอกสาร','err');return;}
+  DB.docs.unshift({name:n,cat:c,type:'pdf',date:new Date().toLocaleDateString('th-TH'),size:'—'});
+  closeM('uploadDocM');document.getElementById('udN').value='';renderDocs(DB.docs);showT('อัปโหลด "'+n+'" สำเร็จ','ok');
+}
+function delDoc(i){if(!confirm('ลบเอกสาร "'+DB.docs[i].name+'" ?'))return;DB.docs.splice(i,1);renderDocs(DB.docs);showT('ลบเอกสารสำเร็จ','ok');}
+
+// ===== DIRECTORY =====
+function renderCommittee(){
+  var html='';
+  DB.committee.forEach(function(m){html+='<div class="comc"><div class="comav">'+m.name.charAt(0)+'</div><div style="font-size:12px;font-weight:600;color:var(--tx);">'+m.name+'</div><div style="font-size:11px;color:var(--tx2);">'+m.role+'</div><div style="font-size:11px;color:var(--gm);margin-top:5px;display:flex;align-items:center;justify-content:center;gap:3px;"><i class="ti ti-phone" style="font-size:11px;"></i>'+m.tel+'</div></div>';});
+  document.getElementById('comGrid').innerHTML=html;
+}
+function renderStaff(){
+  var html='';
+  DB.staff.forEach(function(s,i){html+='<tr><td style="color:var(--tx2);">'+(i+1)+'</td><td style="font-weight:500;white-space:nowrap;">'+s.name+'</td><td><span class="badge bb" style="font-size:10px;">'+s.pos+'</span></td><td class="hm" style="color:var(--gm);">'+s.tel+'</td><td class="hm" style="font-size:11px;color:var(--tx2);">'+s.note+'</td></tr>';});
+  document.getElementById('staffTb').innerHTML=html;
+}
+function addMem(){
+  var f=document.getElementById('amF').value.trim(),l=document.getElementById('amL').value.trim(),r=document.getElementById('amR').value,t=document.getElementById('amT').value.trim();
+  if(!f||!l){showT('กรุณากรอกชื่อ-นามสกุล','err');return;}
+  DB.committee.push({name:f+' '+l,role:r,tel:t||'—'});
+  closeM('addMemM');document.getElementById('amF').value='';document.getElementById('amL').value='';document.getElementById('amT').value='';
+  renderCommittee();showT('เพิ่มสมาชิก '+f+' '+l+' สำเร็จ','ok');
+}
+
+// ===== SETTINGS =====
+function setST(tab,el){
+  document.querySelectorAll('.stt').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('show');});
+  el.classList.add('active');document.getElementById('panel-'+tab).classList.add('show');
+}
+function saveApiUrl(){
+  var url=document.getElementById('apiUrl').value.trim();
+  if(!url){showT('กรุณากรอก URL','err');return;}
+  GS_URL=url;showT('บันทึก URL สำเร็จ ทดสอบการเชื่อมต่อ...','ok');testAPI();
+}
+function testAPI(){
+  setSyncStatus('loading','กำลังทดสอบการเชื่อมต่อ...');
+  gsFetch('users').then(function(data){
+    if(data!==null){setSyncStatus('ok','เชื่อมต่อสำเร็จ! พบข้อมูล '+data.length+' แถว');showT('เชื่อมต่อ Google Sheets สำเร็จ','ok');}
+    else{setSyncStatus('err','ไม่สามารถเชื่อมต่อได้');showT('เชื่อมต่อไม่ได้','err');}
+  }).catch(function(){setSyncStatus('err','เชื่อมต่อไม่ได้');showT('เชื่อมต่อไม่ได้','err');});
+}
+function exportBackup(){
+  showLD('กำลังดึงข้อมูลจาก Google Sheets...');
+  Promise.all([gsFetch('users'),gsFetch('bills'),gsFetch('meter_hist')]).then(function(results){
+    hideLD();
+    var backup={users:results[0],bills:results[1],meter_hist:results[2],exported:new Date().toISOString()};
+    var blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='prapa_backup_'+new Date().toLocaleDateString('th-TH').replace(/\//g,'-')+'.json';a.click();
+    showT('ดาวน์โหลดสำเร็จ','ok');
+  }).catch(function(){hideLD();showT('ดาวน์โหลดไม่ได้','err');});
+}
+function clearAllData(){
+  showLD('กำลังล้างข้อมูล...');
+  Promise.all([gsWrite('users',[]),gsWrite('bills',[]),gsWrite('meter_hist',[])]).then(function(){
+    DB.users=[];DB.bills=[];DB.mHist=[];hideLD();refreshAll();showT('ล้างข้อมูลสำเร็จ','ok');
+  }).catch(function(){hideLD();showT('ล้างไม่ได้','err');});
+}
+</script>
+</body>
+</html>
